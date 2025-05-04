@@ -1,0 +1,13 @@
+.plot-error-container {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border: 1px solid #ffcdd2;
+  border-radius: var(--border-radius);
+  background-color: #ffebee;
+}
+
+.plot-error {
+  color: #d32f2f;
+  font-style: italic;
+  text-align: center;
+} 
