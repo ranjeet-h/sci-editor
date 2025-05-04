@@ -7,6 +7,7 @@ import DocumentExport from './components/DocumentExport';
 import TagsManager from './components/TagsManager';
 import CategoriesManager from './components/CategoriesManager';
 import SciEditor from './components/SciEditor';
+import EnovateVariableDefinition from './components/EnovateVariableDefinition';
 import { Document, Tag, Category, Suggestion, HistoryItem, Variable, PlotItem } from './types';
 import { createNewDocument } from './types/Document';
 import './App.css';
@@ -33,6 +34,7 @@ function App() {
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'error'>('saved');
   const [tags, setTags] = useState<Tag[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [useEnovateUI, setUseEnovateUI] = useState<boolean>(true);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const mathParserRef = useRef(parser());
   const [newPlotAdded, setNewPlotAdded] = useState<boolean>(false);
@@ -1492,15 +1494,18 @@ function App() {
       </div>
 
       <div className="main-container">
-        {/* Main editor component */}
-        <SciEditor
-          value={text}
-          onChange={(value: string) => handleTextChange({ target: { value } } as React.ChangeEvent<HTMLTextAreaElement>)}
-          onKeyDown={(e: React.KeyboardEvent) => handleKeyDown(e as React.KeyboardEvent<HTMLTextAreaElement>)}
-          suggestion={suggestion}
-          variables={variables}
-          editorRef={textareaRef}
-          placeholder="Try these examples:
+        {/* New layout with editor and sidebar */}
+        <div className="editor-sidebar-layout">
+          {/* Editor container - takes 3/4 of the space */}
+          <div className={`editor-container ${plots.length > 0 ? 'with-plots' : ''}`}>
+            <SciEditor
+              value={text}
+              onChange={(value: string) => handleTextChange({ target: { value } } as React.ChangeEvent<HTMLTextAreaElement>)}
+              onKeyDown={(e: React.KeyboardEvent) => handleKeyDown(e as React.KeyboardEvent<HTMLTextAreaElement>)}
+              suggestion={suggestion}
+              variables={variables}
+              editorRef={textareaRef}
+              placeholder="Try these examples:
 • 2 + 3 = 
 • sin(45) = 
 • x = 5
@@ -1512,94 +1517,116 @@ function App() {
 Type equations ending with '=' to calculate instantly.
 Variables can be defined and reused in later calculations.
 Press Tab to accept suggestions."
-        />
-        
-        {/* Suggestion hint text only */}
-        {/* <div className="suggestion-help">
-          {suggestion ? (
-            <span className="hint-text">Press <kbd>Tab</kbd> to accept or <kbd>Esc</kbd> to dismiss</span>
-          ) : (
-            <span className="hint-text" style={{ opacity: 0 }}>Press <kbd>Tab</kbd> to accept or <kbd>Esc</kbd> to dismiss</span>
-          )}
-        </div> */}
-
-        {/* Variable definition section */}
-        <div className="variable-definition-section">
-          <div className="variable-definition-header">
-            <span className="var-section-icon">f(x)</span>
-            <h3 className="var-section-title">Define Variable</h3>
-          </div>
-          <div className="variable-input-container">
-            <div className="input-wrapper">
-              <input
-                type="text"
-                placeholder="e.g., x = 5"
-                value={variableInput}
-                onChange={(e) => setVariableInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && defineVariable()}
-                className="variable-input"
-              />
-              <button 
-                onClick={defineVariable}
-                className="variable-define-btn"
-                title="Define this variable"
-              >
-                <span className="define-btn-icon">+</span>
-                <span className="define-btn-text">Define</span>
-              </button>
-            </div>
-            <div className="variable-help">
-              <span className="help-icon">ℹ️</span> 
-              Format: <code>name = value</code> (e.g. <code>x = 5</code>, <code>radius = 10.5</code>)
-            </div>
-          </div>
-        </div>
-
-        {/* Current Variables Display */}
-        {variables.length > 0 && (
-          <div className="current-variables-section">
-            <div className="section-title">Current Variables</div>
-            <div className="current-variables-list">
-              {variables.slice(0, 5).map((variable) => (
-                <div key={variable.name} className="current-variable-item">
-                  <span className="variable-name">{variable.name}</span>
-                  <span className="variable-value">= {formatVariableValue(variable)}</span>
-                  <button
-                    onClick={() => insertSymbol(variable.name)}
-                    className="variable-use-btn"
-                    title="Use this variable"
-                  >
-                    Use
-                  </button>
-                </div>
-              ))}
-              {variables.length > 5 && (
-                <div className="more-variables">
-                  <button 
-                    onClick={() => setShowVariables(true)}
-                    className="show-all-variables-btn"
-                  >
-                    Show all ({variables.length})
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Plots are rendered here */}
-        <div className="plots-container" ref={plotsContainerRef}>
-          {plots.map(plot => (
-            <PlotCommand 
-              key={plot.id}
-              command={plot.command}
-              onClose={() => closePlot(plot.id)}
-              variables={Object.fromEntries(variables.map(v => [v.name, v.value]))}
             />
-          ))}
+          </div>
+          
+          {/* Sidebar container - takes 1/4 of the space */}
+          <div className="sidebar-container">
+
+
+            {/* Render based on selected UI */}
+            {useEnovateUI ? (
+              <EnovateVariableDefinition 
+                variableInput={variableInput}
+                setVariableInput={setVariableInput}
+                defineVariable={defineVariable}
+                variables={variables}
+                formatVariableValue={formatVariableValue}
+                insertSymbol={insertSymbol}
+                deleteVariable={deleteVariable}
+              />
+            ) : (
+              <>
+                {/* Regular Variable definition section */}
+                <div className="variable-definition-section">
+                  <div className="variable-definition-header">
+                    <span className="var-section-icon">f(x)</span>
+                    <h3 className="var-section-title">Define Variable</h3>
+                  </div>
+                  <div className="variable-input-container">
+                    <div className="input-wrapper">
+                      <input
+                        type="text"
+                        placeholder="e.g., x = 5"
+                        value={variableInput}
+                        onChange={(e) => setVariableInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && defineVariable()}
+                        className="variable-input"
+                      />
+                      <button 
+                        onClick={defineVariable}
+                        className="variable-define-btn"
+                        title="Define this variable"
+                      >
+                        Define
+                      </button>
+                    </div>
+                    <div className="variable-help">
+                      <span className="help-icon">ℹ️</span> 
+                      <span>Format: <code>name = value</code><br/>(e.g. <code>x = 5</code>, <code>radius = 10.5</code>)</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Current Variables Display */}
+                {variables.length > 0 && (
+                  <div className="current-variables-section">
+                    <div className="section-title">Current Variables</div>
+                    <div className="current-variables-list">
+                      {variables.map((variable) => (
+                        <div key={variable.name} className="current-variable-item">
+                          <span className="variable-name">{variable.name}</span>
+                          <span className="variable-value">= {formatVariableValue(variable)}</span>
+                          <button
+                            onClick={() => insertSymbol(variable.name)}
+                            className="variable-use-btn"
+                            title="Use this variable"
+                          >
+                            Use
+                          </button>
+                        </div>
+                      ))}
+                      {variables.length > 5 && (
+                        <div className="more-variables">
+                          <button 
+                            onClick={() => setShowVariables(true)}
+                            className="show-all-variables-btn"
+                          >
+                            Show all ({variables.length})
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
 
+      {/* Plots container shown below the editor layout when plots exist */}
+      {plots.length > 0 && (
+        <div className="plots-container" ref={plotsContainerRef} style={{ marginBottom: "50px" }}>
+          <h3 className="plots-header">Plots</h3>
+          <div className="plots-grid">
+            {plots.map(plot => (
+              <PlotCommand 
+                key={plot.id}
+                command={plot.command}
+                onClose={() => closePlot(plot.id)}
+                variables={Object.fromEntries(variables.map(v => [v.name, v.value]))}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Footer */}
+      <footer className="app-footer">
+        Built by Ranjeet Harichandre with <span className="heart">♥</span>
+      </footer>
+      
       {/* Utility panels */}
       {showHistory && (
         <div className="history-panel">
@@ -1648,47 +1675,170 @@ Press Tab to accept suggestions."
               ×
             </button>
           </div>
-          <div className="variable-form">
-            <input
-              type="text"
-              placeholder="e.g., x = 5"
-              value={variableInput}
-              onChange={(e) => setVariableInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && defineVariable()}
-            />
-            <button onClick={defineVariable}>Define</button>
-          </div>
-          <div className="variables-list">
-            {variables.length === 0 ? (
-              <div className="no-variables">No variables defined yet.</div>
-            ) : (
-              variables.map((variable) => (
-                <div key={variable.name} className="variable-item">
-                  <div className="variable-details">
-                    <div className="variable-name">{variable.name}</div>
-                    <div className="variable-value">
-                      = {formatVariableValue(variable)}
-                    </div>
-                    <div className="variable-type">{variable.type}</div>
-                  </div>
-                  <div className="variable-actions">
-                    <button
-                      onClick={() => insertSymbol(variable.name)}
-                      title="Use this variable"
-                    >
-                      Use
-                    </button>
-                    <button
-                      onClick={() => deleteVariable(variable.name)}
-                      title="Delete this variable"
-                    >
-                      ×
-                    </button>
-                  </div>
+          
+          {useEnovateUI ? (
+            // Enovate styled panel content
+            <div style={{padding: "12px"}}>
+              {/* New approach using inline styles for input container */}
+              <div style={{
+                border: '1px solid rgba(66, 153, 225, 0.2)',
+                borderRadius: '4px',
+                backgroundColor: 'white',
+                padding: '2px',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.03) inset',
+                marginBottom: '10px'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <div style={{
+                    padding: '0 0 0 8px',
+                    color: 'var(--accent-highlight)',
+                    fontWeight: 600,
+                    fontFamily: 'var(--editor-font)',
+                    fontSize: '14px'
+                  }}>let</div>
+                  <input
+                    type="text"
+                    placeholder="e.g., x = 5"
+                    value={variableInput}
+                    onChange={(e) => setVariableInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && defineVariable()}
+                    style={{
+                      flex: 1,
+                      padding: '10px 12px',
+                      border: 'none',
+                      fontSize: '14px',
+                      fontFamily: 'var(--editor-font)',
+                      backgroundColor: 'transparent',
+                      minWidth: 0,
+                      outline: 'none'
+                    }}
+                  />
+                  <button 
+                    onClick={defineVariable}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: 'var(--accent-highlight)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '3px',
+                      padding: '8px 10px',
+                      fontSize: '13px',
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
+                      minWidth: '70px',
+                      boxShadow: '0 2px 4px rgba(66, 153, 225, 0.2)',
+                      marginRight: '2px'
+                    }}
+                    title="Define this variable"
+                  >
+                    <span style={{ marginRight: '6px', fontSize: '16px' }}>≝</span>
+                    Define
+                  </button>
                 </div>
-              ))
-            )}
-          </div>
+              </div>
+              
+              <div className="enovate-help" style={{marginTop: "10px", marginBottom: "15px"}}>
+                <span>Format: <code>name = value</code></span>
+              </div>
+              
+              {variables.length === 0 ? (
+                <div className="enovate-empty-state">No variables defined yet.</div>
+              ) : (
+                <div className="enovate-variables-list" style={{
+                  display: "flex", 
+                  flexDirection: "column",
+                  width: "100%",
+                  boxSizing: "border-box"
+                }}>
+                  {variables.map((variable) => (
+                    <div key={variable.name} className="enovate-variable-item" style={{width: "100%"}}>
+                      <span className="enovate-var-name">{variable.name}</span>
+                      <span className="enovate-var-equals">=</span>
+                      <span className="enovate-var-value">
+                        {formatVariableValue(variable)}
+                      </span>
+                      <span style={{
+                        color: "var(--text-secondary)", 
+                        fontSize: "11px", 
+                        marginLeft: "auto", 
+                        marginRight: "6px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                      }}>
+                        {variable.type}
+                      </span>
+                      <button
+                        onClick={() => insertSymbol(variable.name)}
+                        className="enovate-var-use-btn"
+                        title="Use this variable"
+                      >
+                        Use
+                      </button>
+                      <button
+                        onClick={() => deleteVariable(variable.name)}
+                        className="enovate-var-delete"
+                        title="Delete this variable"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            // Regular styled panel content
+            <>
+              <div className="variable-form">
+                <input
+                  type="text"
+                  placeholder="e.g., x = 5"
+                  value={variableInput}
+                  onChange={(e) => setVariableInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && defineVariable()}
+                />
+                <button onClick={defineVariable}>Define</button>
+              </div>
+              <div className="variables-list">
+                {variables.length === 0 ? (
+                  <div className="no-variables">No variables defined yet.</div>
+                ) : (
+                  variables.map((variable) => (
+                    <div key={variable.name} className="variable-item">
+                      <div className="variable-details">
+                        <div className="variable-name">{variable.name}</div>
+                        <div className="variable-value">
+                          = {formatVariableValue(variable)}
+                        </div>
+                        <div className="variable-type">{variable.type}</div>
+                      </div>
+                      <div className="variable-actions">
+                        <button
+                          onClick={() => insertSymbol(variable.name)}
+                          title="Use this variable"
+                        >
+                          Use
+                        </button>
+                        <button
+                          onClick={() => deleteVariable(variable.name)}
+                          title="Delete this variable"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </>
+          )}
         </div>
       )}
 

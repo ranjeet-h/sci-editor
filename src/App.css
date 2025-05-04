@@ -37,8 +37,12 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   background-color: var(--surface);
+  position: relative;
+  padding-bottom: 50px; /* Space for the fixed footer */
+  box-sizing: border-box;
 }
 
 /* Legacy class compatibility */
@@ -166,7 +170,6 @@ body {
   color: var(--text-primary);
   transition: all var(--transition-speed) ease;
   box-sizing: border-box;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .sci-editor:focus {
@@ -477,18 +480,21 @@ body {
   border-color: #e53e3e;
 }
 
-/* Consistent styling for plots */
+/* Plots container with flexible height */
 .plots-container {
+  display: block;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin: 1.5rem 0;
-  position: relative;
-  scroll-margin-top: 2rem;
-  border: none;
-  background-color: transparent;
-  box-shadow: none;
+  height: auto; /* Allow height to grow based on content */
+  min-height: 250px;
+  max-height: none; /* Remove max height constraint */
+  padding: 15px;
+  margin-top: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  background-color: var(--background);
+  box-shadow: var(--card-shadow);
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  box-sizing: border-box;
 }
 
 /* Plot notification */
@@ -522,11 +528,15 @@ body {
 }
 
 .plot-wrapper {
-  background-color: var(--background);
-  border: 1px solid var(--border);
+  width: 100%;
+  background: white;
   border-radius: var(--border-radius);
-  padding: 1rem;
+  border: 1px solid var(--border);
   box-shadow: var(--card-shadow);
+  overflow: hidden;
+  margin-bottom: 10px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .new-plot .plot-wrapper {
@@ -877,12 +887,46 @@ kbd {
 
 /* Media queries for responsive design */
 @media (max-width: 768px) {
+  /* Header and toolbar mobile styles */
   .app-header {
     flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
+    gap: 0.5rem;
+    padding: 0.75rem;
   }
   
+  .app-toolbar {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 5px;
+  }
+  
+  .toolbar-button {
+    font-size: 12px;
+    padding: 6px 8px;
+    min-width: 70px;
+    margin-bottom: 4px;
+  }
+
+  /* Format selector smaller on mobile */
+  .format-dropdown {
+    font-size: 12px;
+    padding: 5px;
+  }
+
+  /* Save status indicator smaller on mobile */
+  .save-status-indicator {
+    font-size: 12px;
+    padding: 4px;
+    min-width: 60px;
+  }
+
+  /* App title smaller on mobile */
+  .app-title {
+    font-size: 1.25rem;
+  }
+
   .app-controls {
     width: 100%;
     justify-content: center;
@@ -1030,6 +1074,8 @@ kbd {
   display: flex;
   gap: 10px;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .app-title {
@@ -1079,14 +1125,112 @@ kbd {
   color: #e53e3e;
 }
 
-/* Main container holding the editor and plots */
+/* Main container with improved layout */
 .main-container {
   flex: 1;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding-bottom: 60px; /* Ensure content isn't hidden behind fixed footer */
+}
+
+/* Create a flex layout for editor and sidebar */
+.editor-sidebar-layout {
+  display: flex;
+  gap: 20px;
+  height: 60vh;
+  min-height: 400px;
+  max-height: 60vh;
+}
+
+/* Editor container with 100% height */
+.editor-container {
+  flex: 3; /* Take 3/4 of the available space */
+  position: relative;
+  height: 100%;
+  min-height: 350px;
+  border-radius: var(--border-radius);
+  overflow: visible; /* Changed from hidden */
+}
+
+/* Plots container positioned below the editor layout */
+.plots-container {
+  display: block;
+  width: 100%;
+  height: auto; /* Allow height to grow based on content */
+  min-height: 250px;
+  max-height: none; /* Remove max height constraint */
+  padding: 15px;
+  margin-top: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  background-color: var(--background);
+  box-shadow: var(--card-shadow);
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  box-sizing: border-box;
+}
+
+/* Sidebar for variable definition */
+.sidebar-container {
+  flex: 1; /* Take 1/4 of the available space */
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Improved variable definition layout */
+.variable-definition-section {
+  background-color: var(--background);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border);
+  padding: 15px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.variable-definition-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.var-section-icon {
+  background-color: var(--accent-light);
+  color: var(--accent-highlight);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.var-section-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Updated current variables */
+.current-variables-section {
+  background-color: var(--surface);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border);
+  padding: 15px;
+  box-shadow: var(--card-shadow);
+  margin: 0;
 }
 
 /* Custom panels */
@@ -1126,7 +1270,6 @@ kbd {
   cursor: pointer;
   transition: color 0.2s ease;
 }
-
 .panel-close-btn:hover {
   color: var(--text-primary);
 }
@@ -1195,9 +1338,20 @@ kbd {
 }
 
 .variable-help {
-  margin-top: 8px;
   font-size: 12px;
-  color: #718096;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  line-height: 1.4;
+  padding: 0 2px;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.help-icon {
+  display: inline-block;
+  margin-right: 2px;
+  flex-shrink: 0;
 }
 
 code {
@@ -1312,3 +1466,413 @@ code {
   border-color: var(--accent-highlight);
   box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
 }
+
+/* Footer styles */
+.app-footer {
+  text-align: center;
+  padding: 15px 20px;
+  border-top: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 14px;
+  background-color: var(--background);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.app-footer .heart {
+  color: #e53e3e;
+  display: inline-block;
+  animation: heartbeat 1.5s infinite;
+  margin: 0 5px;
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.variable-input {
+  flex: 1;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  font-family: var(--editor-font);
+  transition: border-color 0.2s ease;
+}
+
+.variable-input:focus {
+  outline: none;
+  border-color: var(--accent-highlight);
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
+}
+
+.variable-define-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background-color: var(--accent-highlight);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: 80px;
+}
+
+.variable-define-btn:hover {
+  background-color: #3182ce;
+  transform: translateY(-1px);
+}
+
+.define-btn-icon {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.variable-help {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+/* Adjust current variables in sidebar */
+.current-variables-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.current-variable-item {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.current-variable-item:hover {
+  border-color: var(--accent-highlight);
+  transform: translateY(-1px);
+  box-shadow: var(--card-shadow);
+}
+
+.plots-header {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Plots grid layout */
+.plots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Reduce minimum width */
+  gap: 20px;
+  width: 100%;
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+
+/* Individual plot wrapper */
+.plot-wrapper {
+  width: 100%;
+  background: white;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  margin-bottom: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ensure plots content doesn't overflow */
+.plot-content {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Make plots responsive */
+@media (max-width: 768px) {
+  .plots-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Enovate Variable Definition Section - f(x) style */
+.enovate-variable-section {
+  width: 250px;
+  margin: 15px auto;
+  margin-top: 25px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8faff 0%, #f0f7ff 100%);
+  border-radius: 4px;
+  border: 1px solid rgba(66, 153, 225, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.enovate-variable-section::before {
+  content: "f(x)";
+  position: absolute;
+  right: 16px;
+  top: 8px;
+  font-size: 24px;
+  font-weight: 700;
+  color: rgba(66, 153, 225, 0.12);
+  font-style: italic;
+  font-family: 'Georgia', serif;
+  z-index: 0;
+}
+
+.enovate-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--accent-highlight);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.enovate-title::before {
+  content: "≝";
+  font-size: 22px;
+  color: var(--accent-highlight);
+}
+
+.enovate-input-container {
+  display: flex;
+  gap: 8px;
+  position: relative;
+  align-items: center;
+  background: white;
+  border-radius: 4px;
+  padding: 2px;
+  border: 1px solid rgba(66, 153, 225, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) inset;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  /* Fix for border corners */
+  box-sizing: border-box;
+  background-clip: padding-box;
+}
+
+.enovate-input-container:focus-within {
+  border-color: var(--accent-highlight);
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
+}
+
+.enovate-input-prefix {
+  padding: 0 0 0 8px;
+  color: var(--accent-highlight);
+  font-weight: 600;
+  font-family: var(--editor-font);
+  font-size: 14px;
+  background: white;
+  /* Ensure text doesn't interfere with border */
+  position: relative;
+  z-index: 1;
+}
+
+.enovate-variable-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 0;
+  font-size: 14px;
+  font-family: var(--editor-font);
+  background: transparent;
+  min-width: 0;
+  /* Ensure input doesn't interfere with container border */
+  position: relative;
+  z-index: 1;
+}
+
+.enovate-variable-input:focus {
+  outline: none;
+}
+
+.enovate-define-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--accent-highlight);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: 70px;
+  box-shadow: 0 2px 4px rgba(66, 153, 225, 0.2);
+  margin-right: 1px;
+}
+
+.enovate-define-btn:hover {
+  background-color: #3182ce;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(66, 153, 225, 0.3);
+}
+
+.enovate-define-icon {
+  margin-right: 6px;
+  font-size: 16px;
+}
+
+.enovate-help {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  border-left: 3px solid var(--accent-highlight);
+}
+
+/* Enovate Current Variables */
+.enovate-variables-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.enovate-variable-item {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 4px 6px 4px 8px;
+  border-radius: 3px;
+  border: 1px solid rgba(66, 153, 225, 0.15);
+  font-size: 13px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.enovate-variable-item:hover {
+  border-color: var(--accent-highlight);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.enovate-var-name {
+  font-weight: 600;
+  color: var(--accent-highlight);
+  margin-right: 4px;
+  font-family: var(--editor-font);
+}
+
+.enovate-var-equals {
+  color: var(--text-secondary);
+  margin: 0 4px;
+}
+
+.enovate-var-value {
+  color: var(--text-primary);
+  font-family: var(--editor-font);
+  background-color: #f7fafc;
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-right: 8px;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.enovate-var-use-btn {
+  background-color: rgba(66, 153, 225, 0.1);
+  color: var(--accent-highlight);
+  border: none;
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  margin-left: auto;
+  transition: all 0.2s ease;
+}
+
+.enovate-var-use-btn:hover {
+  background-color: rgba(66, 153, 225, 0.2);
+}
+
+.enovate-var-delete {
+  color: #e53e3e;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  margin-left: 2px;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+.enovate-var-delete:hover {
+  opacity: 1;
+  background-color: rgba(229, 62, 62, 0.1);
+}
+
+.enovate-empty-state {
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: center;
+  padding: 8px;
+  font-size: 13px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 3px;
+  margin-top: 12px;
+}
+
+/* Enovate Animation Effects */
+@keyframes enovate-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.enovate-variable-item.new {
+  animation: enovate-pulse 1s ease;
+  border-color: var(--accent-highlight);
+  background-color: rgba(66, 153, 225, 0.05);
+}
+

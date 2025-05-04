@@ -1,0 +1,26 @@
+.ai-inline-completion {
+  position: absolute;
+  color: rgba(128, 128, 128, 0.8);
+  pointer-events: none;
+  font-family: inherit;
+  font-size: inherit;
+  white-space: pre;
+  z-index: 5;
+}
+
+.ai-inline-completion .loading-indicator {
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.4;
+  }
+} 

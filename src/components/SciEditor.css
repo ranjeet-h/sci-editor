@@ -3,6 +3,8 @@
   position: relative;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
   min-height: 400px;
   border-radius: 8px;
   overflow: visible; /* Allow suggestions to overflow */
@@ -171,25 +173,26 @@
 }
 
 .sci-editor-textarea {
-  width: calc(100% - 48px);
-  height: 400px;
-  resize: none;
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  padding: 16px;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
   font-size: 15px;
   line-height: 1.6;
-  padding: 20px 24px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  outline: none;
-  background-color: white;
-  color: #2d3748;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  resize: none;
+  box-sizing: border-box;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .sci-editor-textarea:focus {
+  outline: none;
   border-color: #4299e1;
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2), inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .toggle-suggestion-mode {
@@ -250,4 +253,71 @@
 
 .suggestion-overlay .suggestion-text {
   color: #8a8a8a; /* Gray color for suggestion */
+}
+
+/* Suggestion help styling */
+.suggestion-help {
+  margin-top: 0px;
+  font-size: 11px;
+  color: #7b8794;
+  text-align: center;
+}
+
+.suggestion-help .hint-text {
+  display: block;
+}
+
+.suggestion-actions {
+  display: none;
+}
+
+/* Mobile button styling for suggestions */
+.suggestion-actions button {
+  background-color: transparent;
+  border: 1px solid #c8ddf9;
+  border-radius: 3px;
+  color: #4a6890;
+  font-size: 10px;
+  padding: 2px 4px;
+  margin: 0 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  pointer-events: auto; /* Ensure buttons are always clickable */
+}
+
+.suggestion-actions .accept-btn {
+  background-color: rgba(152, 195, 121, 0.2);
+  border-color: rgba(152, 195, 121, 0.5);
+}
+
+.suggestion-actions .reject-btn {
+  background-color: rgba(224, 108, 117, 0.2);
+  border-color: rgba(224, 108, 117, 0.5);
+}
+
+.suggestion-actions button:hover {
+  opacity: 0.8;
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+  .suggestion-help .hint-text {
+    display: none;
+  }
+
+  .suggestion-help {
+    margin-top: -10px;
+  }
+  
+  .suggestion-actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  /* Enable pointer events for the suggestion on mobile to make buttons clickable */
+  .inline-ghost-suggestion {
+    pointer-events: auto;
+  }
+
 } 

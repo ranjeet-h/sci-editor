@@ -121,6 +121,32 @@ const SciEditor: React.FC<SciEditorProps> = ({
     }
   }, [suggestion, value]);
 
+  // Handle accepting the suggestion
+  const handleAcceptSuggestion = () => {
+    if (suggestion && textareaRef.current) {
+      // Simulate Tab key press
+      const tabEvent = new KeyboardEvent('keydown', {
+        key: 'Tab',
+        code: 'Tab',
+        bubbles: true
+      });
+      textareaRef.current.dispatchEvent(tabEvent);
+    }
+  };
+
+  // Handle rejecting the suggestion
+  const handleRejectSuggestion = () => {
+    if (suggestion && textareaRef.current) {
+      // Simulate Escape key press
+      const escEvent = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        code: 'Escape',
+        bubbles: true
+      });
+      textareaRef.current.dispatchEvent(escEvent);
+    }
+  };
+
   return (
     <div className="sci-editor-container">
       <textarea
@@ -146,6 +172,22 @@ const SciEditor: React.FC<SciEditorProps> = ({
           }
           <div className="suggestion-help">
             <span className="hint-text">Press <kbd>Tab</kbd> to accept or <kbd>Esc</kbd> to dismiss</span>
+            <div className="suggestion-actions">
+              <button 
+                className="accept-btn" 
+                onClick={handleAcceptSuggestion}
+                aria-label="Accept suggestion"
+              >
+                Accept
+              </button>
+              <button 
+                className="reject-btn" 
+                onClick={handleRejectSuggestion}
+                aria-label="Reject suggestion"
+              >
+                Reject
+              </button>
+            </div>
           </div>
         </div>
       )}
