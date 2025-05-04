@@ -145,7 +145,6 @@ body {
 .editor-container {
   position: relative;
   width: 100%;
-  margin: 1.5rem auto;
   max-width: 1200px;
   border-radius: var(--border-radius);
   overflow: visible;
@@ -885,97 +884,7 @@ kbd {
   padding-bottom: 0.75rem;
 }
 
-/* Media queries for responsive design */
-@media (max-width: 768px) {
-  /* Header and toolbar mobile styles */
-  .app-header {
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.75rem;
-  }
-  
-  .app-toolbar {
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 5px;
-  }
-  
-  .toolbar-button {
-    font-size: 12px;
-    padding: 6px 8px;
-    min-width: 70px;
-    margin-bottom: 4px;
-  }
 
-  /* Format selector smaller on mobile */
-  .format-dropdown {
-    font-size: 12px;
-    padding: 5px;
-  }
-
-  /* Save status indicator smaller on mobile */
-  .save-status-indicator {
-    font-size: 12px;
-    padding: 4px;
-    min-width: 60px;
-  }
-
-  /* App title smaller on mobile */
-  .app-title {
-    font-size: 1.25rem;
-  }
-
-  .app-controls {
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
-  .app-content {
-    padding: 1rem;
-  }
-
-  .shortcuts-modal {
-    width: 95%;
-    max-width: 600px;
-    max-height: 85vh;
-  }
-  
-  .shortcuts-list {
-    grid-template-columns: 1fr;
-    padding: 1rem;
-  }
-  
-  .document-manager-controls {
-    flex-direction: column;
-  }
-  
-  .document-item {
-    flex-direction: column;
-  }
-  
-  .document-actions {
-    flex-direction: row;
-    margin-left: 0;
-    margin-top: 0.5rem;
-    opacity: 1;
-  }
-}
-
-/* Desktop and larger screens */
-@media (min-width: 1200px) {
-  .plots-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-    gap: 1.5rem;
-  }
-  
-  .symbol-groups {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  }
-}
 
 /* Save indicator */
 .save-indicator {
@@ -1154,7 +1063,6 @@ kbd {
   flex: 3; /* Take 3/4 of the available space */
   position: relative;
   height: 100%;
-  min-height: 350px;
   border-radius: var(--border-radius);
   overflow: visible; /* Changed from hidden */
 }
@@ -1631,9 +1539,7 @@ code {
 
 /* Enovate Variable Definition Section - f(x) style */
 .enovate-variable-section {
-  width: 250px;
-  margin: 15px auto;
-  margin-top: 25px;
+  width: 100%;
   padding: 16px 20px;
   background: linear-gradient(135deg, #f8faff 0%, #f0f7ff 100%);
   border-radius: 4px;
@@ -1877,3 +1783,115 @@ code {
   background-color: rgba(66, 153, 225, 0.05);
 }
 
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+  /* Header and toolbar mobile styles */
+  .app-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+  
+  .app-toolbar {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 5px;
+  }
+  
+  .toolbar-button {
+    font-size: 12px;
+    padding: 6px 8px;
+    min-width: 70px;
+    margin-bottom: 4px;
+  }
+
+  /* Format selector smaller on mobile */
+  .format-dropdown {
+    font-size: 12px;
+    padding: 5px;
+  }
+
+  /* Save status indicator smaller on mobile */
+  .save-status-indicator {
+    font-size: 12px;
+    padding: 4px;
+    min-width: 60px;
+  }
+
+  /* App title smaller on mobile */
+  .app-title {
+    font-size: 1.25rem;
+  }
+
+  .app-controls {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .app-content {
+    padding: 1rem;
+  }
+
+  .shortcuts-modal {
+    width: 95%;
+    max-width: 600px;
+    max-height: 85vh;
+  }
+  
+  .shortcuts-list {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+  
+  .document-manager-controls {
+    flex-direction: column;
+  }
+  
+  .document-item {
+    flex-direction: column;
+  }
+  
+  .document-actions {
+    flex-direction: row;
+    margin-left: 0;
+    margin-top: 0.5rem;
+    opacity: 1;
+  }
+
+  /* Add rules for stacking editor and sidebar on mobile */
+  .editor-sidebar-layout {
+    flex-direction: column;
+    height: auto; /* Reset height for vertical stacking */
+    max-height: none; /* Remove max height constraint */
+  }
+
+  .sidebar-container {
+    max-width: unset; /* Allow sidebar to take full width */
+    order: 2; /* Optional: Move sidebar below editor */
+  }
+
+  /* Make enovate variable section full width */
+  .enovate-variable-section {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 15px; /* Keep some top margin */
+  }
+}
+
+/* Desktop and larger screens */
+@media (min-width: 1200px) {
+  .plots-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .symbol-groups {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
